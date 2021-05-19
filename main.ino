@@ -39,9 +39,10 @@ void readMPU(){
   gyro_z = Wire.read()<<8 | Wire.read(); // reading registers: 0x47 (GYRO_ZOUT_H) and 0x48 (GYRO_ZOUT_L)
 }
 
-void printMPU() {
+void printMPU(int i) {
   // print out data
-  Serial.print("aX = "); Serial.print(convert_int16_to_str(accelerometer_x));
+  Serial.print("Data from MPU n "); Serial.print(i);
+  Serial.print("   aX = "); Serial.print(convert_int16_to_str(accelerometer_x));
   Serial.print(" | aY = "); Serial.print(convert_int16_to_str(accelerometer_y));
   Serial.print(" | aZ = "); Serial.print(convert_int16_to_str(accelerometer_z));
   // the following equation was taken from the documentation [MPU-6000/MPU-6050 Register Map and Description, p.30]
@@ -51,19 +52,30 @@ void printMPU() {
   Serial.println();
 }
 
+int n_mpu = 1;
+
 void loop() {
   Wire.beginTransmission(MPU_ADDR);
   Wire.write(0x3B); // starting with register 0x3B (ACCEL_XOUT_H) [MPU-6000 and MPU-6050 Register Map and Descriptions Revision 4.2, p.40]
   Wire.endTransmission(false); // the parameter indicates that the Arduino will send a restart. As a result, the connection is kept active.
   Wire.requestFrom(MPU_ADDR, 7*2, true); // request a total of 7*2=14 registers
-  TCA9548A(0);
-
-  //Read data from MPU
-  readMPU();
-  //Print out the data
-  printMPU();   
+  
+//  int i = 3;
+//  TCA9548A(i);
+//  readMPU();
+//  printMPU(i);
+  
+  for (int i=0; i<=n_mpu; i++) {
+    TCA9548A(i);
+    //Read data from MPU
+    readMPU();
+    //Print out the data
+    printMPU(i);
+    delay(100);  
+  }
+   
    
 
   // delay
-  delay(100);         
+  delay(500);         
 }
