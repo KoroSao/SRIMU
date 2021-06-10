@@ -1,16 +1,21 @@
+from os import write
 from numpy.core.numeric import count_nonzero
 from functions import *
 import numpy as np
-import random
 import matplotlib.pyplot as plt
 import time
+from pathlib import Path
 start_time = time.time()
 
 
+
 #Number of samples of angle combinations for which we want to determine the recoverability rate
-N_SAMPLES = 100000
-N_REAL = 1000
+N_SAMPLES = 1000
+N_REAL = 100
 SHOW_DPS = False
+DIR=  Path().absolute()
+FILE = str(DIR) + "\main.csv"
+
 
 
 for i in range(N_SAMPLES):
@@ -48,6 +53,15 @@ for i in range(N_SAMPLES):
         
     RR = n_not_saturated * 100 / N_REAL
     print(f"Recovery Rate is of : {RR} %")
+
+    #95% is the threshold for a recovery rate to be acceptable
+    if RR >= 95:
+        anglestoprint = str(RR) + ',' + str(angles[0][0]) + ',' + str(angles[0][1]) + ',' + str(angles[0][2]) + ',' \
+        + str(angles[1][0]) + ',' + str(angles[1][1]) + ',' + str(angles[1][2]) + ',' \
+        + str(angles[2][0]) + ',' + str(angles[2][1]) + ',' + str(angles[2][2])
+        
+        writeToCSV(anglestoprint, FILE)
+
 
 
 v = np.array((1,0,0))

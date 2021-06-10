@@ -45,3 +45,20 @@ def countUnsaturedChannels(DPS1,DPS2,DPS3):
         if abs(DPS3[i]) <= 2000:
             n += 1
     return n
+
+
+def exist(filename):
+    try:
+        f = open(filename, 'r')
+        f.close()
+        return True
+    except:
+        return False
+
+def writeToCSV(input_data, output_file):
+    if exist(output_file):
+        f = open(output_file,"a", encoding="utf-8")
+        f.write(input_data + "\n")
+        f.close()
+    else:
+        print("Specified file does not exist !")
