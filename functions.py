@@ -3,6 +3,9 @@ import random
 import matplotlib.pyplot as plt
 import time
 
+UNIFORM_LOW = -4000
+UNIFORM_HIGH = 4000
+
 def genRandomAngles():
     tab = []
     for i in range(3):
@@ -15,7 +18,7 @@ def genRandomAngles():
 
 def genRandomDPS():
     #By definition we'll suppose M[0] = alpha, 1--> Beta, 2--> Gamma
-    M = [np.random.randint(-4000.0, 4000.0),np.random.randint(-4000.0, 4000.0),np.random.randint(-4000.0, 4000.0)]
+    M = [np.random.randint(UNIFORM_LOW, UNIFORM_HIGH),np.random.randint(UNIFORM_LOW, UNIFORM_HIGH),np.random.randint(UNIFORM_LOW, UNIFORM_HIGH)]
     return M
 
 def matrixProductRot(m, v):
@@ -30,9 +33,15 @@ def matrixProductRot(m, v):
     return v_prime    
 
 
-def isSaturated(v):
-    #Returns True if the dps vector has one component greater than 2000
+def countUnsaturedChannels(DPS1,DPS2,DPS3):
+    n = 0
     for i in range(3):
-       if v[i] >= 2000:
-           return True
-    return False
+        if abs(DPS1[i]) <= 2000:
+            n += 1
+    for i in range(3):
+        if abs(DPS2[i]) <= 2000:
+            n += 1
+    for i in range(3):
+        if abs(DPS3[i]) <= 2000:
+            n += 1
+    return n
