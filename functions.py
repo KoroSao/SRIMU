@@ -3,8 +3,8 @@ import random
 import matplotlib.pyplot as plt
 import time
 
-UNIFORM_LOW = -4000
-UNIFORM_HIGH = 4000
+UNIFORM_LOW = -5000
+UNIFORM_HIGH = 5000
 
 def genRandomAngles():
     tab = []
@@ -62,3 +62,7 @@ def writeToCSV(input_data, output_file):
         f.close()
     else:
         print("Specified file does not exist !")
+
+
+
+        

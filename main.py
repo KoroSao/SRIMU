@@ -1,27 +1,31 @@
-from os import write
-from numpy.core.numeric import count_nonzero
 from functions import *
 import numpy as np
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 import time
 from pathlib import Path
 start_time = time.time()
 
+np.random.seed(1)
 
 
 #Number of samples of angle combinations for which we want to determine the recoverability rate
-N_SAMPLES = 1000
-N_REAL = 100
+N_SAMPLES = 100
+N_REAL = 1000
 SHOW_DPS = False
 DIR=  Path().absolute()
 FILE = str(DIR) + "\main.csv"
 
+saveX = []
+saveY = []
+saveZ = []
 
 
 for i in range(N_SAMPLES):
-
     #Generates a new set of angles (3 for each IMU)
     angles = genRandomAngles()
+    saveX.append(angles[0][0])
+    saveY.append(angles[0][1])
+    saveZ.append(angles[0][2])
     # print(f"Angles : {angles}")
 
     #Counts how many of the values generated were not saturated (dps below 2000)
@@ -56,9 +60,9 @@ for i in range(N_SAMPLES):
 
     #95% is the threshold for a recovery rate to be acceptable
     if RR >= 95:
-        anglestoprint = str(RR) + ',' + str(angles[0][0]) + ',' + str(angles[0][1]) + ',' + str(angles[0][2]) + ',' \
-        + str(angles[1][0]) + ',' + str(angles[1][1]) + ',' + str(angles[1][2]) + ',' \
-        + str(angles[2][0]) + ',' + str(angles[2][1]) + ',' + str(angles[2][2])
+        anglestoprint = str(RR) + ';' + str(angles[0][0]) + ';' + str(angles[0][1]) + ';' + str(angles[0][2]) + ',' \
+        + str(angles[1][0]) + ';' + str(angles[1][1]) + ';' + str(angles[1][2]) + ';' \
+        + str(angles[2][0]) + ';' + str(angles[2][1]) + ';' + str(angles[2][2])
         
         writeToCSV(anglestoprint, FILE)
 
@@ -70,3 +74,23 @@ v2 = [1,0,0]
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
+print(saveX, saveY, saveZ)
+
+
+fig = go.Figure(data=[go.Mesh3d(
+                   x = saveX,
+                   y = saveY,
+                   z = saveZ,
+                   opacity=0.5,
+                   color='rgba(244,22,100,0.6)'
+                  )])
+
+fig.update_layout(
+    scene = dict(
+        xaxis = dict(nticks=4, range=[0,360],),
+                     yaxis = dict(nticks=4, range=[0,360],),
+                     zaxis = dict(nticks=4, range=[0,360],),),
+        width=700,
+        margin=dict(r=20, l=10, b=10, t=10))
+
+fig.show()
